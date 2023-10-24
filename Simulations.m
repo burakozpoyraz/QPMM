@@ -9,6 +9,109 @@
 %% FIGURE-1
 clear all;
 clc;
+fig1_save = false;
+
+% QPMM (2x2, BPSK)/////////////////////////////////////////////////////////
+run_simulation = true;
+load("Values/QPMM_NT2_NR2_M2_JointMLD.mat");
+SNRdB_array = QPMM_NT2_NR2_M2_JointMLD(1, :);
+BER_QPMM_NT2_NR2_M2_sim = QPMM_NT2_NR2_M2_JointMLD(3, :);
+if run_simulation
+    fprintf("QPMM (2x2, BPSK) simulation of Figure-1 has just started.\n");
+    num_iterations = 1e5;
+    Nt = 2;
+    Nr = 2;
+    M = 2;
+    P_tot = Nt;
+    mod_type = "PSK";
+    BER_QPMM_NT2_NR2_M2_theo = zeros(1, length(SNRdB_array));
+    parfor SNRdB_index = 1 : length(SNRdB_array)
+        SNRdB = SNRdB_array(SNRdB_index);
+        fprintf("SNR: %ddB\n", SNRdB);
+
+        BER_QPMM_NT2_NR2_M2_theo(SNRdB_index) = ...
+            QPMM_Theo(num_iterations, Nt, Nr, M, P_tot, SNRdB, mod_type);
+    end
+    fprintf("QPMM (2x2, BPSK) simulation of Figure-1 has just finished.\n\n");
+else
+    load("Values/QPMM_NT2_NR2_M2_Theoretical.mat");
+    BER_QPMM_NT2_NR2_M2_theo = QPMM_NT2_NR2_M2_Theoretical(2, :);
+end
+% /////////////////////////////////////////////////////////////////////////
+
+% QPMM (2x2, QPSK)/////////////////////////////////////////////////////////
+run_simulation = true;
+load("Values/QPMM_NT2_NR2_M4.mat");
+BER_QPMM_NT2_NR2_M4_sim = QPMM_NT2_NR2_M4(3, :);
+if run_simulation
+    fprintf("QPMM (2x2, QPSK) simulation of Figure-1 has just started.\n");
+    num_iterations = 1e5;
+    Nt = 2;
+    Nr = 2;
+    M = 4;
+    P_tot = Nt;
+    mod_type = "PSK";
+    BER_QPMM_NT2_NR2_M4_theo = zeros(1, length(SNRdB_array));
+    parfor SNRdB_index = 1 : length(SNRdB_array)
+        SNRdB = SNRdB_array(SNRdB_index);
+        fprintf("SNR: %ddB\n", SNRdB);
+
+        BER_QPMM_NT2_NR2_M4_theo(SNRdB_index) = ...
+            QPMM_Theo(num_iterations, Nt, Nr, M, P_tot, SNRdB, mod_type);
+    end
+    fprintf("QPMM (2x2, QPSK) simulation of Figure-1 has just finished.\n\n");
+else
+    load("Values/QPMM_NT2_NR2_M4_Theoretical.mat");
+    BER_QPMM_NT2_NR2_M4_theo = QPMM_NT2_NR2_M4_Theoretical(2, :);
+end
+% /////////////////////////////////////////////////////////////////////////
+
+% Figure///////////////////////////////////////////////////////////////////
+SetColorPalette()
+fig1 = figure;
+tiledlayout(1, 1, "TileSpacing", "Compact", "Padding", "Compact");
+nexttile
+semilogy(SNRdB_array, BER_QPMM_NT2_NR2_M2_sim, "-", "Color", red,...
+                                                    "LineWidth", 2);
+hold on;
+semilogy(SNRdB_array, BER_QPMM_NT2_NR2_M2_theo, "o", "Color", red,...
+                                                     "LineWidth", 2,...
+                                                     "MarkerEdgeColor", red, ...
+                                                     "MarkerFaceColor", red, ...
+                                                     "MarkerSize", 10);
+hold on;
+semilogy(SNRdB_array, BER_QPMM_NT2_NR2_M4_sim, "-", "Color", yellow,...
+                                                    "LineWidth", 2);
+hold on;
+semilogy(SNRdB_array, BER_QPMM_NT2_NR2_M4_theo, "o", "Color", yellow,...
+                                                     "LineWidth", 2,...
+                                                     "MarkerEdgeColor", yellow, ...
+                                                     "MarkerFaceColor", yellow, ...
+                                                     "MarkerSize", 10);
+set(gca, "TickLabelInterpreter", "latex");
+set(gca, "FontSize" , 14);
+xlabel("$1 / l N_0$", "Interpreter", "latex");
+ylabel("BER", "Interpreter", "latex");
+legend("QPMM Sim, ($2 \times 2$, BPSK, $l=4$)",...
+       "QPMM Theo, ($2 \times 2$, BPSK, $l=4$)",...
+       "QPMM Sim, ($2 \times 2$, QPSK, $l=6$)",...
+       "QPMM Theo, ($2 \times 2$, QPSK, $l=6$)",...
+       "Location", "northeast", "FontSize", 14, "Interpreter", "latex");
+ylim([1e-3, 3e-1]);
+grid;
+% /////////////////////////////////////////////////////////////////////////
+
+QPMM_NT2_NR2_M4_Theoretical = [SNRdB_array; BER_QPMM_NT2_NR2_M4_theo];
+QPMM_NT2_NR2_M2_Theoretical = [SNRdB_array; BER_QPMM_NT2_NR2_M2_theo];
+
+% Figure Save//////////////////////////////////////////////////////////////
+if fig1_save
+    set(fig1, "Units", "Inches");
+    pos = get(fig1, "Position");
+    set(fig1, "PaperPositionMode", "Auto", "PaperUnits", "Inches", "PaperSize", [pos(3), pos(4)]);
+    print(fig1, "Figures/Figure1", "-dpdf", "-r0");
+end
+% /////////////////////////////////////////////////////////////////////////
 
 %% FIGURE-2
 clear all;
