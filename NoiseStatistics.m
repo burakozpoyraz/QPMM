@@ -1,7 +1,6 @@
 %==========================================================================
-% PAPER: Quadrature Permutation Matrix Modulation
+% SCHEME: Quadrature Permutation Matrix Modulation (QPMM)
 % ANALYSIS: Noise Statistics Analysis of the Post-Processing Operation
-% AUTHORS: Burak Özpoyraz, Atalay Aydın, Ertuğrul Başar
 % AFFILIATION: Koç University - Communications and Research Laboratory
 % DEVELOPER: Burak Özpoyraz
 %==========================================================================
@@ -52,13 +51,11 @@ end
 % Before Post-Processing===================================================
 mean_n = mean_n_sum / num_iterations;
 var_n = var_n_sum / num_iterations;
-N0_simulation = sqrt(abs(var_n)^2);
 % =========================================================================
 
 % After Post-Processing====================================================
 mean_n_tilde = mean_n_tilde_sum / num_iterations;
 var_n_tilde = var_n_tilde_sum / num_iterations;
-N0_tilde = sqrt(abs(var_n_tilde)^2);
 % =========================================================================
 % /////////////////////////////////////////////////////////////////////////
 

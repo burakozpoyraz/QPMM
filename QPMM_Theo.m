@@ -1,6 +1,6 @@
 %==========================================================================
-% PAPER: Quadrature Permutation Matrix Modulation
-% AUTHORS: Burak Özpoyraz, Atalay Aydın, Ertuğrul Başar
+% SCHEME: Quadrature Permutation Matrix Modulation (QPMM)
+% ANALYSIS: Theoretical Bit Error Rate Upper Bound of the QPMM Scheme
 % AFFILIATION: Koç University - Communications and Research Laboratory
 % DEVELOPER: Burak Özpoyraz
 
@@ -13,7 +13,7 @@
 % 6-) SNRdB: Signal-to-noise ratio (dB)
 % 7-) mod_type: Modulation type ("PSK" or "QAM")
 
-% OUTPUTS
+% OUTPUT
 % - Pb: Theoretical bit error rate upper bound
 %==========================================================================
 
@@ -47,14 +47,15 @@ function Pb = QPMM_Theo(num_iterations, Nt, Nr, M, P_tot, SNRdB, mod_type)
     N0 = (1 / n_tot) / SNR; % Noise power (W)
     % =====================================================================
 
-    % Permutation Matrix and Data Symbol Vector Sets=======================
+    % Permutation Matrix, Data Symbol Vector, and Data Bit Vector Sets=====
     P_set = PermMatrixSet(Nd, np);
-    [s_set, bit_set] = DataSymVecSet(Nd, ss);
+    [s_set, bit_set] = DataSymBitVecSet(Nd, ss);
     % =====================================================================
-    % /////////////////////////////////////////////////////////////////////
 
     % Theoretical Bit Error Rate Upper Bound///////////////////////////////
     Pb_sum = 0;
+    Pb_matrix = zeros(Np^4 * M^(2*Nd), 7);
+    Pb_iter_index = 1;
     for i = 1 : Np
         bi = Dec2Bin(i - 1, np);
         PI = P_set(:, :, i);
@@ -107,6 +108,8 @@ function Pb = QPMM_Theo(num_iterations, Nt, Nr, M, P_tot, SNRdB, mod_type)
                             end
                             PEP = CPEP_sum / num_iterations;
                             Pb_sum = Pb_sum + e * PEP / log2(N_tot);
+                            Pb_matrix(Pb_iter_index, :) = [i, j, k, i_bar, j_bar, k_bar, M^Nd * e * PEP / log2(N_tot)];
+                            Pb_iter_index = Pb_iter_index + 1;
                             % =============================================
                         end
                     end
@@ -114,13 +117,13 @@ function Pb = QPMM_Theo(num_iterations, Nt, Nr, M, P_tot, SNRdB, mod_type)
             end
         end
     end
-    Pb = Pb_sum / N_tot;
+    Pb = M^Nd * Pb_sum / N_tot;
     % /////////////////////////////////////////////////////////////////////
 end
 
 %% INNER FUNCTIONS (TOTAL OF 3)
 %==========================================================================
-% 1. Permutation Matrix Set
+% 1. Creating permutation matrix set
 
 % ARGUMENTS
 % 1-) Nd: Number of data symbols transmitted in a time slot
@@ -150,12 +153,22 @@ end
 
 
 %==========================================================================
+% 2. Creating data symbol and bit vector sets
+
+% ARGUMENTS
+% 1-) Nd: Number of data symbols transmitted in a time slot
+% 2-) ss: Set of the amplitude-phase modulated complex symbols
+
+% OUTPUTS
+% 1-) s_set: Set of data symbol vectors
+% 2-) bit_set: Set of data bit vectors
 %==========================================================================
-function [s_set, bit_set] = DataSymVecSet(Nd, ss)
+function [s_set, bit_set] = DataSymBitVecSet(Nd, ss)
     M = length(ss);
     m = log2(M);
     num_s = M^Nd;
     index_set = transpose(dec2base(0 : num_s - 1, M, Nd) - '0');
+    index_set(index_set > 9) = index_set(index_set > 9) - 7; 
     s_set = ss(index_set + 1);
     bit_set = reshape(reshape(Dec2Bin(index_set, log2(M))', [1, num_s * Nd * m]), [m * Nd, num_s])';
 end
@@ -163,7 +176,7 @@ end
 
 
 %==========================================================================
-% 3. Conversion from Decimal to Binary
+% 3. Conversion from decimal to binary
 
 % ARGUMENTS
 % 1-) decimal: Decimal value to be converted to bit array

@@ -1,6 +1,6 @@
 %==========================================================================
-% PAPER: Quadrature Permutation Matrix Modulation
-% AUTHORS: Burak Özpoyraz, Atalay Aydın, Ertuğrul Başar
+% SCHEME: Quadrature Permutation Matrix Modulation (QPMM)
+% ANALYSIS: Bit Error Rate Simulation of the QPMM Scheme
 % AFFILIATION: Koç University - Communications and Research Laboratory
 % DEVELOPER: Burak Özpoyraz
 
@@ -11,8 +11,12 @@
 % 4-) M: Modulation level
 % 5-) P_tot: Power of the signal transmitted in a time slot (W)
 % 6-) SNRdB: Signal-to-noise ratio (dB)
-% 7-) mod_type: Modulation type ("PSK" or "QAM")
-% 8-) detector_type: Detector type ("JointMLD" or "C-MLD")
+% 7-) mod_type: Modulation type
+%               • Input-1: "PSK"
+%               • Input-2: "QAM"
+% 8-) detector_type: Detector type
+%               • Input-1: "JointMLD"
+%               • Input-2: "C-MLD"
 
 % OUTPUTS
 % 1-) BER: Bit error rate
@@ -22,11 +26,12 @@
 %% MAIN FUNCTION
 function [BER, num_bit_errors] = QPMM(num_iterations, Nt, Nr, M, P_tot, SNRdB, mod_type, detector_type)
     % Parameters///////////////////////////////////////////////////////////
-    % Symbol Set (Constellation)===========================================
-    if mod_type == "QAM"
-        ss = qammod(0 : M-1, M, "Gray", "UnitAveragePower", true);
-    elseif mod_type == "PSK"
-        ss = pskmod(0 : M-1, M, pi / 4, "Gray");
+    % Data Symbol Set (Constellation)======================================
+    switch mod_type
+        case "QAM"
+            ss = qammod(0 : M-1, M, "Gray", "UnitAveragePower", true);
+        case "PSK"
+            ss = pskmod(0 : M-1, M, pi / 4, "Gray");
     end
     % =====================================================================
     
@@ -34,11 +39,9 @@ function [BER, num_bit_errors] = QPMM(num_iterations, Nt, Nr, M, P_tot, SNRdB, m
     Nd = min(Nt, Nr); % Number of data symbols transmitted in a time slot
     m = log2(M); % Number of data bits corresponding to a single data symbol
     nd = Nd * m; % Number of data bits transmitted in a time slot
-    np = floor(log2(factorial(Nd))); % Number of permutation bits corresponding 
-                                     % to a single permutation matrix
+    np = floor(log2(factorial(Nd))); % Number of permutation bits corresponding to a single permutation matrix
     n_tot = nd + 2 * np; % Number of bits transmitted in a time slot
-    num_total_bits = num_iterations * n_tot; % Number of total bits transmitted 
-                                             % during the Monte Carlo simulation
+    num_total_bits = num_iterations * n_tot; % Number of total bits transmitted during the Monte Carlo simulation
     % =====================================================================
 
     % Noise Power==========================================================
@@ -103,11 +106,12 @@ function [BER, num_bit_errors] = QPMM(num_iterations, Nt, Nr, M, P_tot, SNRdB, m
         % =================================================================
     end
     BER = num_bit_errors / num_total_bits;
+    % /////////////////////////////////////////////////////////////////////
 end
 
 %% INNER FUNCTIONS (TOTAL OF 4)
 %==========================================================================
-% 1. Permutation Matrix Set
+% 1. Creating permutation matrix set
 
 % ARGUMENTS
 % 1-) Nd: Number of data symbols transmitted in a time slot
@@ -137,7 +141,7 @@ end
 
 
 %==========================================================================
-% 2. Conversion from Binary to Decimal
+% 2. Conversion from binary to decimal
 
 % ARGUMENT
 % - bit_array: Bit array to be converted to decimal value
@@ -163,7 +167,9 @@ end
 % 4-) A: Singular value matrix of the channel matrix
 % 5-) P_set: Set of permutation matrices
 % 6-) ss: Set of the amplitude-phase modulated complex symbols
-% 7-) detector_type: Detector type ("JointMLD" or "C-MLD")
+% 7-) detector_type: Detector type
+%               • Input-1: "JointMLD"
+%               • Input-2: "C-MLD"
 
 % OUTPUTS
 % 1-) detected_data_bits: Detected data bits
@@ -182,107 +188,108 @@ function [detected_data_bits, detected_perm_bits] = Detector(y_tilde, betaI, bet
     % /////////////////////////////////////////////////////////////////////
     
     % Detector/////////////////////////////////////////////////////////////
-    if detector_type == "JointMLD"
-        num_P_comb = Np^2;
-        num_s_comb = M^Nd;
-        num_total_combination = num_P_comb * num_s_comb;
-        metric_matrix = zeros(num_total_combination, Nd + 3);
-        comb_index = 1;
-        for i = 1 : Np
-            PI = P_set(:, :, i);
-            for j = 1 : Np
-                PQ = P_set(:, :, j);
-                for s_comb_index = 1 : num_s_comb
-                    s_comb_str = dec2base(s_comb_index - 1, M, Nd);
-                    s_comb = zeros(1, Nd);
-                    for s_index = 1 : Nd
-                        s_comb(s_index) = base2dec(s_comb_str(s_index), M) + 1;
+    switch detector_type
+        case "JointMLD"
+            num_P_comb = Np^2;
+            num_s_comb = M^Nd;
+            num_total_combination = num_P_comb * num_s_comb;
+            metric_matrix = zeros(num_total_combination, Nd + 3);
+            comb_index = 1;
+            for i = 1 : Np
+                PI = P_set(:, :, i);
+                for j = 1 : Np
+                    PQ = P_set(:, :, j);
+                    for s_comb_index = 1 : num_s_comb
+                        s_comb_str = dec2base(s_comb_index - 1, M, Nd);
+                        s_comb = zeros(1, Nd);
+                        for s_index = 1 : Nd
+                            s_comb(s_index) = base2dec(s_comb_str(s_index), M) + 1;
+                        end
+                        s = transpose(ss(s_comb));
+                        
+                        metric = norm(y_tilde - betaI * A * PI * A * real(s) - 1i * betaQ * A * PQ * A * imag(s))^2;
+                        metric_matrix(comb_index, 1) = i;
+                        metric_matrix(comb_index, 2) = j;
+                        metric_matrix(comb_index, 3 : end - 1) = s_comb;
+                        metric_matrix(comb_index, end) = metric;
+                        comb_index = comb_index + 1;
                     end
-                    s = transpose(ss(s_comb));
-                    
-                    metric = norm(y_tilde - betaI * A * PI * A * real(s) - 1i * betaQ * A * PQ * A * imag(s))^2;
-                    metric_matrix(comb_index, 1) = i;
-                    metric_matrix(comb_index, 2) = j;
-                    metric_matrix(comb_index, 3 : end - 1) = s_comb;
-                    metric_matrix(comb_index, end) = metric;
+                end
+            end
+            metric_array = metric_matrix(:, end);
+            [~, min_ind] = min(metric_array);
+    
+            % Detection of the Permutation Bits============================
+            detected_perm_bits = zeros(2, np);
+            
+            i_hat = metric_matrix(min_ind, 1);
+            detected_perm_bits(1, :) = Dec2Bin(i_hat - 1, np);
+            
+            j_hat = metric_matrix(min_ind, 2);
+            detected_perm_bits(2, :) = Dec2Bin(j_hat - 1, np);
+            % =============================================================
+    
+            % Detection of the Data Bits===================================
+            detected_data_bits = zeros(Nd, m);
+            for k = 1 : Nd
+                detected_data = metric_matrix(min_ind, k + 2);
+                detected_data_bits(k, :) = Dec2Bin(detected_data - 1, m);
+            end
+            % =============================================================
+        case "C-MLD"
+            num_P_comb = Np^2;
+            metric_matrix = zeros(num_P_comb, Nd + 3);
+            comb_index = 1;
+            for i = 1 : Np
+                PI = P_set(:, :, i);
+                permI = legal_perm_matrix(i, :);
+                for j = 1 : Np
+                    PQ = P_set(:, :, j);
+                    permQ = legal_perm_matrix(j, :);
+                    eps_bar_ij = 0;
+                    for k = 1 : Nd
+                        RI = A * PI * A;
+                        rI_ik = RI(permI(k), k);
+                        yk_bar_I = real(y_tilde(permI(k)));
+    
+                        RQ = A * PQ * A;
+                        rQ_jk = RQ(permQ(k), k);
+                        yk_bar_Q = imag(y_tilde(permQ(k)));
+                        yk_bar = yk_bar_I + 1i * yk_bar_Q;
+    
+                        diff_val = yk_bar - betaI * rI_ik * real(ss) - 1i * betaQ * rQ_jk * imag(ss);
+                        [eps_ijk, min_data_ind] = min(abs(diff_val).^2);
+    
+                        eps_bar_ij = eps_bar_ij + eps_ijk;
+    
+                        metric_matrix(comb_index, 1) = i;
+                        metric_matrix(comb_index, 2) = j;
+                        metric_matrix(comb_index, k + 2) = min_data_ind;
+                    end
+                    metric_matrix(comb_index, end) = eps_bar_ij;
                     comb_index = comb_index + 1;
                 end
             end
-        end
-        metric_array = metric_matrix(:, end);
-        [~, min_ind] = min(metric_array);
-
-        % Detection of the Permutation Bits================================
-        detected_perm_bits = zeros(2, np);
-        
-        i_hat = metric_matrix(min_ind, 1);
-        detected_perm_bits(1, :) = Dec2Bin(i_hat - 1, np);
-        
-        j_hat = metric_matrix(min_ind, 2);
-        detected_perm_bits(2, :) = Dec2Bin(j_hat - 1, np);
-        % =================================================================
-
-        % Detection of the Data Bits=======================================
-        detected_data_bits = zeros(Nd, m);
-        for k = 1 : Nd
-            detected_data = metric_matrix(min_ind, k + 2);
-            detected_data_bits(k, :) = Dec2Bin(detected_data - 1, m);
-        end
-        % =================================================================
-    elseif detector_type == "C-MLD"
-        num_P_comb = Np^2;
-        metric_matrix = zeros(num_P_comb, Nd + 3);
-        comb_index = 1;
-        for i = 1 : Np
-            PI = P_set(:, :, i);
-            permI = legal_perm_matrix(i, :);
-            for j = 1 : Np
-                PQ = P_set(:, :, j);
-                permQ = legal_perm_matrix(j, :);
-                eps_bar_ij = 0;
-                for k = 1 : Nd
-                    RI = A * PI * A;
-                    rI_ik = RI(permI(k), k);
-                    yk_bar_I = real(y_tilde(permI(k)));
-
-                    RQ = A * PQ * A;
-                    rQ_jk = RQ(permQ(k), k);
-                    yk_bar_Q = imag(y_tilde(permQ(k)));
-                    yk_bar = yk_bar_I + 1i * yk_bar_Q;
-
-                    diff_val = yk_bar - betaI * rI_ik * real(ss) - 1i * betaQ * rQ_jk * imag(ss);
-                    [eps_ijk, min_data_ind] = min(abs(diff_val).^2);
-
-                    eps_bar_ij = eps_bar_ij + eps_ijk;
-
-                    metric_matrix(comb_index, 1) = i;
-                    metric_matrix(comb_index, 2) = j;
-                    metric_matrix(comb_index, k + 2) = min_data_ind;
-                end
-                metric_matrix(comb_index, end) = eps_bar_ij;
-                comb_index = comb_index + 1;
+            metric_array = metric_matrix(:, end);
+            [~, min_ind] = min(metric_array);
+    
+            % Detection of the Permutation Bits============================
+            detected_perm_bits = zeros(2, np);
+            
+            i_hat = metric_matrix(min_ind, 1);
+            detected_perm_bits(1, :) = Dec2Bin(i_hat - 1, np);
+    
+            j_hat = metric_matrix(min_ind, 2);
+            detected_perm_bits(2, :) = Dec2Bin(j_hat - 1, np);
+            % =============================================================
+    
+            % Detection of the Data Bits===================================
+            detected_data_bits = zeros(Nd, m);
+            for k = 1 : Nd
+                detected_data = metric_matrix(min_ind, k + 2);
+                detected_data_bits(k, :) = Dec2Bin(detected_data - 1, m);
             end
-        end
-        metric_array = metric_matrix(:, end);
-        [~, min_ind] = min(metric_array);
-
-        % Detection of the Permutation Bits================================
-        detected_perm_bits = zeros(2, np);
-        
-        i_hat = metric_matrix(min_ind, 1);
-        detected_perm_bits(1, :) = Dec2Bin(i_hat - 1, np);
-
-        j_hat = metric_matrix(min_ind, 2);
-        detected_perm_bits(2, :) = Dec2Bin(j_hat - 1, np);
-        % =================================================================
-
-        % Detection of the Data Bits=======================================
-        detected_data_bits = zeros(Nd, m);
-        for k = 1 : Nd
-            detected_data = metric_matrix(min_ind, k + 2);
-            detected_data_bits(k, :) = Dec2Bin(detected_data - 1, m);
-        end
-        % =================================================================
+            % =============================================================
     end
     % /////////////////////////////////////////////////////////////////////
 end
@@ -290,7 +297,7 @@ end
 
 
 %==========================================================================
-% 4. Conversion from Decimal to Binary
+% 4. Conversion from decimal to binary
 
 % ARGUMENTS
 % 1-) decimal: Decimal value to be converted to bit array
