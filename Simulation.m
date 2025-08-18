@@ -4,22 +4,17 @@
 % ANALYSIS: Simulation Algorithm of the Paper
 % AFFILIATION: Koç University - Communications and Research Laboratory
 % DEVELOPER: Burak Özpoyraz
-
-% ALGORITHM DESCRIPTION
 %==========================================================================
 
 %% SIMULATION ALGORITHM
 clear
 clc
 
-% Parameters///////////////////////////////////////////////////////////////
-% Figure Parameters========================================================
-fig_save = true;
-fig_name = "FigName";
-fig_path = "UserData/Figures";
-% =========================================================================
+% Simulation Parameters////////////////////////////////////////////////////
+data_save = true;
+data_name = "DataName";
+data_path = "UserData/Values/" + data_name + ".mat";
 
-% Simulation Parameters====================================================
 scheme = "QPMM";
 num_iterations = 1e4;
 Nt = 2;
@@ -29,43 +24,27 @@ P_tot = Nt;
 SNRdB_array = 0 : 3 : 30;
 mod_type = "PSK";
 detector_type = "C-MLD"; % Not necessary for theoretical QPMM analysis
-% =========================================================================
 % /////////////////////////////////////////////////////////////////////////
 
 % Simulation///////////////////////////////////////////////////////////////
-[BER, num_bit_errors] = RunSimulation(scheme, num_iterations, Nt, Nr, M, P_tot, SNRdB_array, mod_type, detector_type);
+[BER_array, num_bit_error_array] = RunSimulation(scheme, num_iterations, Nt, Nr, M, P_tot, SNRdB_array, mod_type, detector_type);
 % /////////////////////////////////////////////////////////////////////////
 
-% Figure///////////////////////////////////////////////////////////////////
-SetLegendText(scheme, Nt, Nr, M, mod_type);
-SetColorPalette();
-fig = figure;
-tiledlayout(1, 1, "TileSpacing", "Compact", "Padding", "Compact");
-nexttile
-semilogy(SNRdB_array, BER, "-", "Color", red,...
-                                "LineWidth", 2,...
-                                "MarkerEdgeColor", red, ...
-                                "MarkerFaceColor", red, ...
-                                "MarkerSize", 10);
-set(gca, "TickLabelInterpreter", "latex");
-set(gca, "FontSize" , 14);
-xlabel("$E_b / N_0$", "Interpreter", "latex");
-ylabel("BER", "Interpreter", "latex");
-legend(legend_text,...
-       "Location", "southwest", "FontSize", 14, "Interpreter", "latex");
-grid;
-% /////////////////////////////////////////////////////////////////////////
-
-% Figure Save//////////////////////////////////////////////////////////////
-if fig_save
-    set(fig, "Units", "Inches");
-    pos = get(fig, "Position");
-    set(fig, "PaperPositionMode", "Auto", "PaperUnits", "Inches", "PaperSize", [pos(3), pos(4)]);
-    print(fig, fig_path + "/" + fig_name, "-dpdf", "-r0");
+% Data Save////////////////////////////////////////////////////////////////
+if data_save
+    sim_data_st.scheme = scheme;
+    sim_data_st.Nt = Nt;
+    sim_data_st.Nr = Nr;
+    sim_data_st.M = M;
+    sim_data_st.mod_type = mod_type;
+    sim_data_st.SNRdB_array = SNRdB_array;
+    sim_data_st.BER_array = BER_array;
+    sim_data_st.num_bit_error_array = num_bit_error_array;
+    save(data_path, "sim_data_st");
 end
 % /////////////////////////////////////////////////////////////////////////
 
-%% INNER FUNCTIONS (TOTAL OF 3)
+%% INNER FUNCTIONS (TOTAL OF 1)
 %==========================================================================
 %==========================================================================
 function varargout = RunSimulation(scheme, num_iterations, Nt, Nr, M, P_tot, SNRdB_array, mod_type, varargin)
@@ -125,57 +104,5 @@ function varargout = RunSimulation(scheme, num_iterations, Nt, Nr, M, P_tot, SNR
             varargout{2} = num_bit_errors;
     end
     % /////////////////////////////////////////////////////////////////////
-end
-%==========================================================================
-
-
-%==========================================================================
-%==========================================================================
-function SetLegendText(scheme, Nt, Nr, M, mod_type)
-    switch scheme
-        case {"QPMM", "QPMM Theo"}
-            Nd = min(Nt, Nr); % Number of data symbols transmitted in a time slot
-            m = log2(M); % Number of data bits corresponding to a single data symbol
-            nd = Nd * m; % Number of data bits transmitted in a time slot
-            np = floor(log2(factorial(Nd))); % Number of permutation bits corresponding to a single permutation matrix
-            l = nd + 2 * np; % Number of bits transmitted in a time slot
-        case "PMM"
-            Nd = min(Nt, Nr); % Number of data symbols transmitted in a time slot
-            m = log2(M); % Number of data bits corresponding to a single data symbol
-            nd = Nd * m; % Number of data bits transmitted in a time slot
-            np = floor(log2(factorial(Nd))); % Number of permutation bits transmitted in a time slot
-            l = nd + np; % Number of bits transmitted in a time slot
-        case "SM"
-            nd = log2(M); % Number of data bits for APM symbol selection
-            ns = log2(Nt); % Number of spatial bits for antenna selection
-            l = nd + ns; % Number of total bits transmitted in a time slot
-        case "QSM"
-            nd = log2(M); % Number of data bits for APM symbol selection
-            ns = log2(Nt); % Number of spatial bits for antenna selection corresponding to each component
-            l = nd + 2 * ns; % Number of total bits transmitted in a time slot
-    end
-
-    if mod_type == "PSK" && M == 2
-        mod_text = "BPSK";
-    elseif mod_type == "PSK" && M == 4
-        mod_text = "QPSK";
-    else
-        mod_text = M + "-" + mod_type;
-    end
-
-    legend_text = scheme + ", ($" + Nt + " \times " + Nr + "$, " + mod_text + ", $l=" + l + "$)";
-    assignin("base", "legend_text", legend_text);
-end
-%==========================================================================
-
-
-%==========================================================================
-%==========================================================================
-function SetColorPalette()
-    assignin("base", "purple", [126, 47, 142] / 255);
-    assignin("base", "red", [162, 20, 47] / 255);
-    assignin("base", "yellow", [237, 177, 32] / 255);
-    assignin("base", "blue", [0, 114, 189] / 255);
-    assignin("base", "green", [119, 172, 48] / 255);
 end
 %==========================================================================
