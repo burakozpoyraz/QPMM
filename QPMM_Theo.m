@@ -11,7 +11,9 @@
 % 4-) M: Modulation level
 % 5-) P_tot: Power of the signal transmitted in a time slot (W)
 % 6-) SNRdB: Signal-to-noise ratio (dB)
-% 7-) mod_type: Modulation type ("PSK" or "QAM")
+% 7-) mod_type: Modulation type
+%               • Input-1: "PSK"
+%               • Input-2: "QAM"
 
 % OUTPUT
 % - Pb: Theoretical bit error rate upper bound
