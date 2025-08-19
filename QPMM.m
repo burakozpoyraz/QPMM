@@ -1,9 +1,16 @@
-%==========================================================================
-% SCHEME: Quadrature Permutation Matrix Modulation (QPMM)
-% ANALYSIS: Bit Error Rate Simulation of the QPMM Scheme
-% AFFILIATION: Koç University - Communications and Research Laboratory
-% DEVELOPER: Burak Özpoyraz
-
+%================= QUADRATURE PERMUTATION MATRIX MODULATION================
+% This function performs a Monte Carlo simulation of the proposed
+% Quadrature Permutation Matrix Modulation (QPMM) scheme. In this scheme,
+% two distinct permutation matrices are used to separately encode the
+% in-phase and quadrature components of the transmitted symbol vector. The
+% function models a MIMO system, applies SVD-based precoding, and computes
+% the transmit signal using power normalization for both components. It
+% simulates channel and noise effects, applies post-processing at the
+% receiver, and detects the transmitted bits using either a JointMLD or
+% C-MLD detector. The simulation is repeated for a specified number of
+% iterations to calculate the bit error rate (BER) and total number of bit
+% errors, which are returned as output.
+%
 % ARGUMENTS
 % 1-) num_iterations: Number of iterations for Monte Carlo simulation
 % 2-) Nt: Number of transmit antennas
@@ -17,10 +24,14 @@
 % 8-) detector_type: Detector type
 %               • Input-1: "JointMLD"
 %               • Input-2: "C-MLD"
-
+%
 % OUTPUTS
 % 1-) BER: Bit error rate
 % 2-) num_bit_errors: Number of bit errors
+%
+% DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% MAIN FUNCTION

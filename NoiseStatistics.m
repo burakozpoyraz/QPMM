@@ -1,8 +1,13 @@
-%==========================================================================
-% SCHEME: Quadrature Permutation Matrix Modulation (QPMM)
-% ANALYSIS: Noise Statistics Analysis of the Post-Processing Operation
-% AFFILIATION: Koç University - Communications and Research Laboratory
+%============ NOISE STATISTICS ANALYSIS AFTER POST-PROCESSING =============
+% This algorithm evaluates the impact of the post-processing operation
+% (unitary transformation using SVD) on the statistical properties of
+% complex Gaussian noise in a MIMO system. Specifically, it checks whether
+% the mean and variance of the noise remain unchanged after applying the
+% Hermitian of the left singular vectors of the channel matrix (U' * n).
+%
 % DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 clear all;

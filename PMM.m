@@ -1,9 +1,13 @@
-%==========================================================================
-% SCHEME: Permutation Matrix Modulation (PMM)
-% ANALYSIS: Bit Error Rate Simulation of the PMM Scheme
-% AFFILIATION: Koç University - Communications and Research Laboratory
-% DEVELOPER: Burak Özpoyraz
-
+%====================== PERMUTATION MATRIX MODULATION =====================
+% This function performs a Monte Carlo simulation of the conventional 
+% Permutation Matrix Modulation (PMM) scheme in a MIMO system. It evaluates 
+% the bit error rate (BER) under various system and modulation parameters 
+% by transmitting random data and permutation bits, applying SVD-based 
+% precoding, and processing the received signal using one of three 
+% detection strategies: JointMLD, LowComplex, or C-MLD. The simulation 
+% runs for a specified number of iterations, counts total bit errors, and 
+% returns the resulting BER and number of bit errors.
+%
 % ARGUMENTS
 % 1-) num_iterations: Number of iterations for Monte Carlo simulation
 % 2-) Nt: Number of transmit antennas
@@ -18,10 +22,14 @@
 %               • Input-1: "JointMLD"
 %               • Input-2: "LowComplex"
 %               • Input-3: "C-MLD"
-
+%
 % OUTPUTS
 % 1-) BER: Bit error rate
 % 2-) num_bit_errors: Number of bit errors
+%
+% DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% MAIN FUNCTION

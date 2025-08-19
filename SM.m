@@ -1,9 +1,12 @@
-%==========================================================================
-% SCHEME: Spatial Modulation (SM)
-% ANALYSIS: Bit Error Rate Simulation of the SM Scheme
-% AFFILIATION: Koç University - Communications and Research Laboratory
-% DEVELOPER: Burak Özpoyraz
-
+%============================ SPATIAL MODULATION===========================
+% This function performs a Monte Carlo simulation of the conventional
+% Spatial Modulation (SM) scheme under Rayleigh fading channels. The
+% simulation supports both Joint Maximum Likelihood Detection (JointMLD)
+% and Zero-Forcing (ZF) detection methods. The bit error rate (BER) is
+% computed based on randomly generated data and spatial bits, with
+% configurable system parameters such as the number of antennas, modulation
+% order, SNR, and transmit power.
+%
 % ARGUMENTS
 % 1-) num_iterations: Number of iterations for Monte Carlo simulation
 % 2-) Nt: Number of transmit antennas
@@ -17,10 +20,14 @@
 % 8-) detector_type: Detector type
 %               • Input-1: "JointMLD"
 %               • Input-2: "ZF"
-
+%
 % OUTPUTS
 % 1-) BER: Bit error rate
 % 2-) num_bit_errors: Number of bit errors
+%
+% DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% MAIN FUNCTION

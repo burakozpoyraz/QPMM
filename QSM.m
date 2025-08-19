@@ -1,9 +1,15 @@
-%==========================================================================
-% SCHEME: Quadrature Spatial Modulation (QSM)
-% ANALYSIS: Bit Error Rate Simulation of the QSM Scheme
-% AFFILIATION: Koç University - Communications and Research Laboratory
-% DEVELOPER: Burak Özpoyraz
-
+%====================== QUADRATURE SPATIAL MODULATION======================
+% This function performs a Monte Carlo simulation to compute the bit error
+% rate (BER) of the Quadrature Spatial Modulation (QSM) scheme. In QSM,
+% information is conveyed both through conventional amplitude-phase
+% modulated (APM) symbols and the selection of transmit antennas for the
+% in-phase and quadrature components independently. The function supports
+% different modulation types (QAM or PSK) and detector types (e.g.,
+% JointMLD or ZF), and it calculates the number of bit errors across
+% randomly generated symbol and spatial bit combinations under flat
+% Rayleigh fading channels. The total BER is then obtained by normalizing
+% the total number of bit errors over all simulated bits.
+%
 % ARGUMENTS
 % 1-) num_iterations: Number of iterations for Monte Carlo simulation
 % 2-) Nt: Number of transmit antennas
@@ -17,10 +23,14 @@
 % 8-) detector_type: Detector type
 %               • Input-1: "JointMLD"
 %               • Input-2: "ZF"
-
+%
 % OUTPUTS
 % 1-) BER: Bit error rate
 % 2-) num_bit_errors: Number of bit errors
+%
+% DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% MAIN FUNCTION

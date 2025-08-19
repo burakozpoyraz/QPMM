@@ -1,9 +1,18 @@
-%==========================================================================
-% PAPER: Quadrature Permutation Matrix Modulation
-% AUTHORS: Burak Özpoyraz, Atalay Aydın, Ertuğrul Başar
-% ANALYSIS: Simulation Algorithm of the Paper
-% AFFILIATION: Koç University - Communications and Research Laboratory
+%=========================== SIMULATION FRAMEWORK==========================
+% This algorithm performs BER simulations or theoretical analysis for
+% various MIMO transmission schemes (e.g., QPMM, PMM, SM, QSM). It supports
+% both Monte Carlo simulations and analytical upper-bound calculations
+% (currently only for QPMM) under flat Rayleigh fading channels. Users can
+% configure the system parameters such as antenna counts, modulation type,
+% modulation order, and SNR values. The core logic is handled by the
+% `RunSimulation` function, which dynamically calls the appropriate scheme
+% function based on the input. Simulation results including BER and number
+% of bit errors are optionally saved in a `.mat` file for further analysis
+% or visualization.
+%
 % DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% SIMULATION ALGORITHM

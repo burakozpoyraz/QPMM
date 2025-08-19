@@ -1,9 +1,15 @@
-%==========================================================================
-% SCHEME: Quadrature Permutation Matrix Modulation (QPMM)
-% ANALYSIS: Theoretical Bit Error Rate Upper Bound of the QPMM Scheme
-% AFFILIATION: Koç University - Communications and Research Laboratory
-% DEVELOPER: Burak Özpoyraz
-
+%=========== THEORETICAL QUADRATURE PERMUTATION MATRIX MODULATION==========
+% Computes the theoretical bit error rate (BER) upper bound for the
+% Quadrature Permutation Matrix Modulation (QPMM) scheme under specified
+% system parameters. The analysis is performed by calculating the average
+% pairwise error probabilities (PEPs) between all possible transmission
+% combinations, including different symbol vectors and permutation matrix
+% pairs. Each PEP is evaluated over a large number of random MIMO channel
+% realizations using a closed-form bound, and the total BER is then
+% estimated using union-bound techniques. This function serves as a
+% benchmark to validate the accuracy and efficiency of the proposed QPMM
+% scheme without performing full Monte Carlo simulations.
+%
 % ARGUMENTS
 % 1-) num_iterations: Number of iterations for Monte Carlo simulation
 % 2-) Nt: Number of transmit antennas
@@ -14,9 +20,13 @@
 % 7-) mod_type: Modulation type
 %               • Input-1: "PSK"
 %               • Input-2: "QAM"
-
+%
 % OUTPUT
 % - Pb: Theoretical bit error rate upper bound
+%
+% DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% MAIN FUNCTION

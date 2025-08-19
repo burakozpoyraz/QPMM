@@ -1,9 +1,25 @@
-%==========================================================================
-% PAPER: Quadrature Permutation Matrix Modulation
-% AUTHORS: Burak Özpoyraz, Atalay Aydın, Ertuğrul Başar
-% ANALYSIS: Reproducing the Figures of the Paper
-% AFFILIATION: Koç University - Communications and Research Laboratory
+%======================== QPMM FIGURE REPRODUCTION ========================
+% This algorithm is used to reproduce the BER and complexity figures
+% presented in the paper, as well as to visualize any user-generated
+% simulation stored in the UserData/Values/ folder. This script ensures
+% consistent styling across all plots.
+%
+% The algorithm includes two primary functionalities:
+%
+% 1) Custom Figure Plotting
+%   • The user can specify a `.mat` file that contains simulation data.
+%   • The script loads the data and automatically generates a BER plot
+%     with LaTeX formatting, consistent color schemes, and styled markers.
+%   • The figure is optionally saved in PDF format.
+%
+% 2) Paper Figure Reproduction
+%   • Figures 6 through 13 correspond to the main results of the paper.
+%   • Each figure section loads predefined simulation or theoretical data
+%      and visualizes it using consistent figure styling.
+%
 % DEVELOPER: Burak Özpoyraz
+%
+% DATE: 19.08.2025
 %==========================================================================
 
 %% CUSTOM FIGURE
