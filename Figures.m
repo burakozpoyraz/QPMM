@@ -161,7 +161,7 @@ if fig6_save
     set(fig6, "Units", "Inches");
     pos = get(fig6, "Position");
     set(fig6, "PaperPositionMode", "Auto", "PaperUnits", "Inches", "PaperSize", [pos(3), pos(4)]);
-    print(fig6, "Figure6", "-dpdf", "-r0");
+    print(fig6, "Figures/Figure6", "-dpdf", "-r0");
 end
 % /////////////////////////////////////////////////////////////////////////
 
