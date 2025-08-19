@@ -58,7 +58,7 @@ This paper introduces the in-phase and quadrature (IQ) extension to the permutat
 
 <h3>📜 MATLAB Scripts</h3>
 
-- `Figures.m`: Reproduces Figures 6–13 from the paper by loading the `.mat` data stored in the **Values/** folder as well as visualize user-generated simulation stored in the UserData/Values/ folder.
+- `Figures.m`: Reproduces Figures 6–13 from the paper by loading the `.mat` data stored in the **Values/** folder as well as visualize user-generated simulation stored in the **UserData/Values/** folder.
 - `NoiseStatistics.m`: Analyzes and verifies that noise statistics (mean and variance) remain unchanged after SVD-based unitary post-processing in the QPMM scheme using a Monte Carlo simulation.
 - `PMM.m`: Performs a Monte Carlo simulation of the conventional Permutation Matrix Modulation (PMM) scheme under specified system parameters.
 - `QPMM.m`: Performs a Monte Carlo simulation of the proposed Quadrature Permutation Matrix Modulation (QPMM) scheme under specified system parameters.
@@ -246,4 +246,5 @@ B. Ozpoyraz, A. Aydin and E. Basar, "Quadrature Permutation Matrix Modulation," 
   doi={10.1109/TWC.2025.3581483}
 }
 ```
+
 
