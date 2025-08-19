@@ -58,14 +58,14 @@ This paper introduces the in-phase and quadrature (IQ) extension to the permutat
 
 <h3>📜 MATLAB Scripts</h3>
 
-- `Figures.m`: Reproduces Figures 6–13 from the paper by loading the `.mat` data stored in the **Values/** folder.
+- `Figures.m`: Reproduces Figures 6–13 from the paper by loading the `.mat` data stored in the **Values/** folder as well as visualize user-generated simulation stored in the UserData/Values/ folder.
 - `NoiseStatistics.m`: Analyzes and verifies that noise statistics (mean and variance) remain unchanged after SVD-based unitary post-processing in the QPMM scheme using a Monte Carlo simulation.
 - `PMM.m`: Performs a Monte Carlo simulation of the conventional Permutation Matrix Modulation (PMM) scheme under specified system parameters.
 - `QPMM.m`: Performs a Monte Carlo simulation of the proposed Quadrature Permutation Matrix Modulation (QPMM) scheme under specified system parameters.
 - `QPMM_Theo.m`: Computes the theoretical BER of the proposed Quadrature Permutation Matrix Modulation (QPMM) scheme under specified system parameters.
 - `QSM.m`: Performs a Monte Carlo simulation of the conventional Quadrature Spatial Modulation (QSM) scheme under specified system parameters.
 - `SM.m`: Performs a Monte Carlo simulation of the conventional Spatial Modulation (SM) scheme under specified system parameters.
-- `Simulation.m`: Runs a complete BER simulation for a selected modulation scheme (QPMM, PMM, SM, or QSM) using customizable parameters. It supports both theoretical and Monte Carlo analyses, automatically selects the appropriate algorithm, and generates BER performance figures with proper formatting. The script is modular and includes built-in validation for detector compatibility and system settings.
+- `Simulation.m`: Runs a complete BER simulation for a selected modulation scheme (QPMM, PMM, SM, or QSM) using customizable parameters. It supports both theoretical and Monte Carlo analyses and automatically selects the appropriate algorithm. The script is modular and includes built-in validation for detector compatibility and system settings.
 
 <h2 align="center">REPRODUCIBILITY</h2>
 🔸 This repository is structured to ensure full reproducibility of both the simulation results and the figures presented in the paper. It also supports user-defined experiments through a modular and extensible design. The simulation process is divided into two modular stages:
@@ -246,3 +246,4 @@ B. Ozpoyraz, A. Aydin and E. Basar, "Quadrature Permutation Matrix Modulation," 
   doi={10.1109/TWC.2025.3581483}
 }
 ```
+
